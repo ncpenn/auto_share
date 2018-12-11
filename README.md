@@ -14,5 +14,5 @@ This script is not supported by Poshmark and simply automates user behaviors in 
 2. Open the bookmarks manager from **Bookmarks > Bookmark Manager** or clicking the **Bookmarks** link in the bookmarks bar.
 3. Find the bookmark you saved and click the edit link in the menu to the right of it. 
 4. Edit the name of the bookmark to **Share Poshmark Closet** or similar. 
-5. In the URL box, enter ``javascript:`` followed by the contents of the [auto_share.js](/thelastbaldwin/auto_share/raw/master/auto_share.js) file in this repo.
+5. In the URL box, enter ``javascript:`` followed by the contents of the [auto_share.js](https://raw.githubusercontent.com/thelastbaldwin/auto_share/master/auto_share.js) file in this repo.
 
