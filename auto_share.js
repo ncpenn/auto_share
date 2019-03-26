@@ -5,13 +5,15 @@
     const shareModalId = "#share-popup";
     const followerShareClass = ".pm-followers-share-link";
 
+    const isVisible = el => el.offsetParent !== null || getComputedStyle(el).display !== "none";
+    const getCaptchaElement = () => document.querySelector("#captcha-popup");
     const getWindowHeight = () => document.body.offsetHeight;
     const scrollToBottomOfPage = () => window.scrollTo(0, getWindowHeight());
     const getAllTiles = () => document.querySelectorAll(".tile");
     const getActiveTiles = () => {
         const allTiles = getAllTiles();
 
-        return Array.prototype.filter.call(allTiles, 
+        return Array.prototype.filter.call(allTiles,
             tile => tile.querySelector(inventoryTagClass) === null)
     };
     const getShareButton = t => t.querySelector(shareButtonClass);
@@ -21,15 +23,20 @@
         const shareToFollowersButton = shareModal.querySelector(followerShareClass);
         const activeTiles = getActiveTiles();
         let currentTileIndex = 0;
+        let captchaEl = getCaptchaElement();
 
         const shareNextActiveTile = () => {
-            const currentTile = activeTiles[currentTileIndex++];
-            const shareButton = getShareButton(currentTile);
+            captchaEl = captchaEl || getCaptchaElement();
 
-            shareButton.click();
-            shareToFollowersButton.click();
+            if (!captchaEl || !isVisible(captchaEl)){
+                const currentTile = activeTiles[currentTileIndex++];
+                const shareButton = getShareButton(currentTile);
 
-            if(currentTileIndex < activeTiles.length){
+                shareButton.click();
+                shareToFollowersButton.click();
+            }
+
+            if (currentTileIndex < activeTiles.length){
                 window.setTimeout(shareNextActiveTile, 500);
             }
         };
