@@ -54,7 +54,7 @@
     };
 
     let lastHeight = getWindowHeight();
-    let numberOfTimesScollToBottomFailed = 0
+    let numberOfTimesScollToBottomFailed = 0;
     scrollToBottomOfPage();
     let handler = setInterval(function(){
         let current = getWindowHeight();
