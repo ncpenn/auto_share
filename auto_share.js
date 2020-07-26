@@ -38,7 +38,7 @@
                         clickModalShareButton();
 
                         let isSuccessToastGone = setInterval(function(){
-                            if(!isVisible(document.querySelector('#flash__message'))){
+                            if(!document.querySelector('#flash__message')){
                                 clearInterval(isSuccessToastGone);
                                 
                                 if (currentTileIndex < activeTiles.length) {
@@ -66,7 +66,7 @@
             numberOfTimesScollToBottomFailed++;
         }
 
-        if(numberOfTimesScollToBottomFailed > 10){
+        if(numberOfTimesScollToBottomFailed > 20){
             clearInterval(handler);
             shareActiveListings();
         }
