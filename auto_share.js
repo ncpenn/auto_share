@@ -8,7 +8,7 @@
     const getCaptchaElement = () => document.querySelector("#captcha-popup");
     const getWindowHeight = () => document.body.offsetHeight;
     const scrollToBottomOfPage = () => window.scrollTo(0, document.body.offsetHeight);
-    const getAllTiles = () => document.querySelectorAll(".tile");
+    const getAllTiles = () => document.querySelectorAll(".card");
     const getActiveTiles = () => {
         const allTiles = getAllTiles();
         window.console.log("You have a total of " + allTiles.length + " items in your closet.");
@@ -28,7 +28,7 @@
         const shareNextActiveTile = () => {
             captchaEl = captchaEl || getCaptchaElement();
             if (!captchaEl || !isVisible(captchaEl)) {
-                window.console.log("sharing item: " + currentTileIndex + " of " + activeTiles.length + " active listings.");
+                window.console.log("sharing item: " + (currentTileIndex + 1) + " of " + activeTiles.length + " active listings.");
                 const currentTile = activeTiles[currentTileIndex++];
                 const shareButton = getShareButton(currentTile); 
                 shareButton.click(clickModalShareButton);
