@@ -1,74 +1,48 @@
-(function() {
-    const inventoryTagClass = ".inventory-tag";
-    const shareButtonClass = ".social-action-bar__share";
-    const shareModalId = ".share-modal";
-    const followerShareClass = ".internal-share__link";
-    const randomMilliseconds = () => Math.floor(Math.random() * (3010 - 1570)) + 1570;
-    const isVisible = el => el.offsetParent !== null || getComputedStyle(el).display !== "none";
-    const getCaptchaElement = () => document.querySelector("#captcha-popup");
-    const getWindowHeight = () => document.body.offsetHeight;
-    const scrollToBottomOfPage = () => window.scrollTo(0, document.body.offsetHeight);
-    const getAllTiles = () => document.querySelectorAll(".card");
-    const getActiveTiles = () => {
-        const allTiles = getAllTiles();
-        window.console.log("You have a total of " + allTiles.length + " items in your closet.");
-        return Array.prototype.filter.call(allTiles, tile => tile.querySelector(inventoryTagClass) === null)
-    };
-    const clickModalShareButton = () => {
-        document
-        .querySelector(shareModalId)
-        .querySelector(followerShareClass)
-        .click();
-    };
-    const getShareButton = t => t.querySelector(shareButtonClass);
-    const shareActiveListings = () => {
-        const activeTiles = getActiveTiles();
-        let currentTileIndex = 0;
-        let captchaEl = getCaptchaElement();
-        const shareNextActiveTile = () => {
-            captchaEl = captchaEl || getCaptchaElement();
-            if (!captchaEl || !isVisible(captchaEl)) {
-                window.console.log("sharing item: " + (currentTileIndex + 1) + " of " + activeTiles.length + " active listings.");
-                const currentTile = activeTiles[currentTileIndex++];
-                const shareButton = getShareButton(currentTile); 
-                shareButton.click(clickModalShareButton);
-                let isModalShowing = setInterval(function(){
-                   if(isVisible(document.querySelector(shareModalId)) && isVisible(document.querySelector(followerShareClass))) {
-                        clearInterval(isModalShowing);
-                        clickModalShareButton();
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-                        let isSuccessToastGone = setInterval(function(){
-                            if(!document.querySelector('#flash__message')){
-                                clearInterval(isSuccessToastGone);
-                                
-                                if (currentTileIndex < activeTiles.length) {
-                                    window.setTimeout(shareNextActiveTile, randomMilliseconds());
-                                }
-                            }
-                        }, 100);  
-                   }
-                }, 100);
-            }
-        };
-        shareNextActiveTile();
-    };
+const scrollToBottom = async (delay = 1200, maxAttempts = 15) => {
+  let lastHeight = document.body.scrollHeight;
+  let attempt = 0;
 
-    let lastHeight = getWindowHeight();
-    let numberOfTimesScollToBottomFailed = 0;
-    scrollToBottomOfPage();
-    let handler = setInterval(function(){
-        let current = getWindowHeight();
-        if(lastHeight != current) {
-            lastHeight = current;
-            scrollToBottomOfPage();
-            numberOfTimesScollToBottomFailed = 0;
-        } else {
-            numberOfTimesScollToBottomFailed++;
-        }
+  while (attempt < maxAttempts) {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+    await sleep(delay);
 
-        if(numberOfTimesScollToBottomFailed > 20){
-            clearInterval(handler);
-            shareActiveListings();
-        }
-    }, 500);
+    const newHeight = document.body.scrollHeight;
+    if (newHeight === lastHeight) {
+      break;
+    }
+
+    lastHeight = newHeight;
+    attempt += 1;
+  }
+
+  return lastHeight;
+};
+
+(async () => {
+  console.log("Scrolling to load all listings...");
+  await scrollToBottom();
+
+  const shareButtons = Array.from(document.getElementsByClassName("share-v2"));
+  console.log(`Found ${shareButtons.length} share buttons after scrolling.`);
+
+  for (let i = 0; i < shareButtons.length; i++) {
+    const button = shareButtons[i];
+    console.log(
+      `opening share modal on ${i + 1} of ${shareButtons.length} listings...`,
+    );
+    button.click();
+    await sleep(2000);
+
+    const container = document.querySelector(".share-wrapper-container");
+    if (container) {
+      console.log(`clicking share button on ${i + 1}`);
+      container.click();
+    } else {
+      console.log(`share wrapper container not found for item ${i + 1}`);
+    }
+
+    await sleep(3000);
+  }
 })();
